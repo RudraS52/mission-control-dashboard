@@ -88,11 +88,11 @@ useEffect(() => {
     try {
       const data = await getISSData()
 
-      // Update the coordinates using the API response
-      setIssPosition({
-        latitude: data.iss_position.latitude,
-        longitude: data.iss_position.longitude,
-      })
+      // Update coordinates from the normalized ISS API response
+setIssPosition({
+  latitude: data.latitude,
+  longitude: data.longitude,
+})
 
       // Clear any previous API error
       setIssError('')

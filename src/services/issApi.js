@@ -1,18 +1,17 @@
 export async function getISSData() {
-  // Send a request to the public ISS position API
+  // Fetch the ISS's current position from the HTTPS tracking API.
   const response = await fetch(
-    'http://api.open-notify.org/iss-now.json'
+    'https://api.wheretheiss.at/v1/satellites/25544'
   )
 
-  // Check whether the API request was successful
+  // Stop if the API returns an unsuccessful HTTP status.
   if (!response.ok) {
-    throw new Error('Failed to fetch ISS data')
+    throw new Error(`Failed to fetch ISS data: ${response.status}`)
   }
 
-  // Convert the API response into JavaScript data
+  // Convert the API response into JavaScript data.
   const data = await response.json()
 
-  // Return the ISS data to the React component
+  // Return the telemetry to the React component.
   return data
 }
-
