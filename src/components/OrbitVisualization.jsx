@@ -2,7 +2,13 @@ import issImage from '../assets/iis.png'
 import earthImage from '../assets/Earth-Planet.png'
 
 // Receive live ISS coordinates and API request status from App
-function OrbitVisualization({ issPosition, issLoading, issError }) {
+// Receive live ISS coordinates, API status, and movement direction
+function OrbitVisualization({
+  issPosition,
+  issLoading,
+  issError,
+  issDirection,
+}) {
 
   // Read the live ISS longitude from React state
   const longitude = Number(issPosition.longitude)
@@ -75,6 +81,13 @@ const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
     : '--'}°
 </strong>
   </div>
+  {/* Display the direction calculated from consecutive ISS positions */}
+<div className="coordinate-item">
+  <span>DIRECTION</span>
+  <strong>
+    {issDirection}
+  </strong>
+</div>
 </div>
 
     <div className="orbit-view">

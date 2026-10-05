@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import MissionStatus from './components/MissionStatus'
 import Telemetry from './components/Telemetry'
@@ -23,6 +23,16 @@ const [issPosition, setIssPosition] = useState({
   latitude: null,
   longitude: null,
 })
+
+// Keep the previous ISS API position between refreshes
+const previousIssPosition = useRef({
+  latitude: null,
+  longitude: null,
+})
+
+// Store the ISS movement direction calculated from consecutive positions
+const [issDirection, setIssDirection] = useState('--')
+
 // Track the current ISS API request status
 const [issLoading, setIssLoading] = useState(true)
 const [issError, setIssError] = useState('')
@@ -88,18 +98,52 @@ useEffect(() => {
     try {
       const data = await getISSData()
 
-      // Update coordinates from the normalized ISS API response
+// Convert the latest API coordinates to numbers
+const newLatitude = Number(data.latitude)
+const newLongitude = Number(data.longitude)
+
+// Read the previous ISS position saved by useRef
+const previousLatitude = previousIssPosition.current.latitude
+const previousLongitude = previousIssPosition.current.longitude
+
+// Calculate movement direction after the first API reading
+if (previousLatitude !== null && previousLongitude !== null) {
+  const latitudeChange = newLatitude - previousLatitude
+  const longitudeChange = newLongitude - previousLongitude
+
+  // Build a simple compass direction from coordinate changes
+  let direction = ''
+
+  if (latitudeChange > 0) direction += 'N'
+  if (latitudeChange < 0) direction += 'S'
+  if (longitudeChange > 0) direction += 'E'
+  if (longitudeChange < 0) direction += 'W'
+
+  setIssDirection(direction || 'STATIONARY')
+}
+
+// Save the latest position for the next 10-second comparison
+previousIssPosition.current = {
+  latitude: newLatitude,
+  longitude: newLongitude,
+}
+
+// Update React state with the latest ISS coordinates
 setIssPosition({
-  latitude: data.latitude,
-  longitude: data.longitude,
+  latitude: newLatitude,
+  longitude: newLongitude,
 })
 
       // Clear any previous API error
       setIssError('')
-    } catch (error) {
+    } 
+    
+    catch (error) {
       // Store an error message if the request fails
       setIssError('Unable to fetch ISS position')
-    } finally {
+    } 
+    
+    finally {
       // Mark the request as completed
       setIssLoading(false)
     }
@@ -120,6 +164,8 @@ setIssPosition({
 useEffect(() => {
   // Log only when ISS position state changes
   console.log('ISS Position Updated:', issPosition)
+  console.log('ISS Direction:', issDirection)
+  
 }, [issPosition])
 
 // Check the ISS position stored in React state
