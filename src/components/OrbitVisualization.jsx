@@ -53,12 +53,20 @@ const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
 <div className="iss-coordinates">
   <div className="coordinate-item">
     <span>LATITUDE</span>
-    <strong>{issPosition.latitude ?? '--'}°</strong>
+    <strong>
+  {issPosition.latitude !== null
+    ? Number(issPosition.latitude).toFixed(4)
+    : '--'}°
+</strong>
   </div>
 
   <div className="coordinate-item">
     <span>LONGITUDE</span>
-    <strong>{issPosition.longitude ?? '--'}°</strong>
+    <strong>
+  {issPosition.longitude !== null
+    ? Number(issPosition.longitude).toFixed(4)
+    : '--'}°
+</strong>
   </div>
 </div>
 
