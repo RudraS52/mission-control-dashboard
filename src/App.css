@@ -773,3 +773,16 @@ body {
 }
 
 }
+
+/* Live status indicator for real-time ISS telemetry */
+.orbit-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.live-indicator {
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}

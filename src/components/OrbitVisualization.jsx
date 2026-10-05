@@ -37,7 +37,14 @@ const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
   return (
    <section className="orbit-visualization">
     
-    <h2>Orbital Position</h2>
+   <div className="orbit-title-row">
+  <h2>Orbital Position</h2>
+
+  {/* Indicates that ISS coordinates are being updated live */}
+  {!issLoading && !issError && (
+    <span className="live-indicator">● LIVE</span>
+  )}
+</div>
 
     {/* Show the current ISS API request status */}
  {issLoading && (
