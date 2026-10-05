@@ -1,0 +1,775 @@
+
+* {
+  box-sizing: border-box;
+  
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+    letter-spacing: 0.05em !important;
+}
+
+.dashboard {
+  width: 100%;
+  min-height: 100vh;
+  background: #0b1020;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: left;
+}
+
+
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: white;
+}
+
+.dashboard-header p {
+  margin-top: 8px;
+  color: #9ca8c7;
+}
+
+.mission-status h2,
+.telemetry h2,
+.mission-overview h2 {
+  color: white;
+  letter-spacing: 1px !important;
+}
+
+.dashboard-content {
+  padding: 40px;
+}
+ /* mission status and overview styles */
+.mission-overview {
+  padding: 24px;
+  border: 1px solid #27304a;
+  border-radius: 12px;
+  background: #121a2e;
+}
+
+.mission-overview h2 {
+  margin-top: 0;
+}
+
+.mission-status {
+
+  /* min-height: 190px; */
+  margin-bottom: 24px;
+  padding: 24px;
+  border: 1px solid #27304a;
+  border-radius: 12px;
+  background: #121a2e;
+}
+
+.mission-status h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #1b2942;
+  font-size: 14px;
+  height: 30px;
+  max-width: 100%;
+}
+
+.status-indicator span {
+  color: #4ade80;
+}
+
+.mission-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.mission-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mission-details span {
+  font-size: 13px;
+  color: #8f9bb5;
+}
+
+.mission-details strong {
+  font-size: 16px;
+  color: white;
+}
+
+.telemetry {
+  margin-bottom: 24px;
+}
+
+.telemetry h2 {
+  margin-bottom: 16px;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.telemetry-card {
+  height: 140px !important;
+  padding: 18px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.telemetry-card:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease;
+}
+
+.telemetry-card span {
+  display: block;
+  margin-bottom: 10px;
+  color: #8f9bb5;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+
+.telemetry-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 20px;
+  color: white;
+}
+
+/* Give battery telemetry a slightly stronger visual presence */
+.telemetry-card:last-child strong {
+  font-size: 22px;
+}
+
+.battery-bar {
+  width: 100%;
+  height: 6px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.battery-level {
+  width: 80%;
+  height: 100%;
+  border-radius: 4px;
+  background: #00ff66;
+}
+
+.battery-low {
+  background: #ff6b6b;
+}
+
+.battery-warning {
+  display: block;
+  height: 16px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color:#ff6b6b;
+}
+
+@media (max-width: 900px) {
+  .telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  
+  .dashboard-content {
+    padding: 24px 16px;
+  }
+
+  .mission-details {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+.overview-details {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.overview-details div {
+  padding: 18px;
+  border: 1px solid #27304a;
+  border-radius: 10px;
+  background: #0f172a;
+}
+
+.overview-details span {
+  display: block;
+  margin-bottom: 8px;
+  color: #8f9bb5;
+  font-size: 13px;
+}
+
+.overview-details strong {
+  display: block;
+  color: white;
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  .overview-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .overview-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.mission-message {
+  font-size: 12px;
+  max-width: 100%;
+  margin: 10px 0;
+
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 18px;
+}
+
+.live-indicator {
+  font-size: 12px;
+  margin-left: 8px;
+  color: #00ff66;
+  animation: livePulse 1.5s infinite;
+}
+
+/* Subtle pulse for the live telemetry indicator */
+@keyframes livePulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.spacecraft-icon {
+  display: inline-block;
+  animation: spacecraftRotate 4s linear infinite;
+}
+
+@keyframes spacecraftRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Header layout */
+.dashboard-header {
+  height: 100px;
+  padding: 16px 40px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  text-align: left;
+}
+
+.header-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+
+  min-width: 150px;
+  text-align: right;
+
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.header-status > div:first-child {
+  width: 170px;
+  display: flex;
+  justify-content: flex-start !important;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.system-nominal {
+  width: 130px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.header-status > div {
+  white-space: nowrap;
+}
+
+.header-status small {
+  font-size: 10px;
+  font-weight: normal;
+  opacity: 0.6;
+  letter-spacing: 1px;
+}
+
+
+/* Subtle system status pulse */
+.status-dot {
+  color: #00ff66;
+  font-size: 20px !important;
+  animation: statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.header-content p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Footer layout */
+.dashboard-footer {
+  margin-top: 40px;
+  padding: 20px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  background-color: #050813;
+}
+
+.dashboard-footer p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.status-maintenance {
+  color: #ffb347;
+}
+
+.mission-clock {
+  font-family: monospace;
+  font-size: 11px;
+  opacity: 0.85;
+  letter-spacing: 1px;
+}
+
+
+@media (max-width: 600px) {
+  .dashboard-header {
+    height: 151px;
+    padding: 18px 16px;
+  }
+
+  .header-content {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+}
+
+
+  .header-content p {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+
+ .header-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  min-width: 150px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .header-status {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.status-indicator {
+  white-space: normal;
+  height:106px !important;
+  
+}
+  .mission-clock {
+    font-size: 9px;
+  }
+}
+
+/* Mission event timeline */
+.mission-timeline {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #27304a;
+  border-radius: 12px;
+  background: #121a2e;
+  
+}
+
+.mission-timeline h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: white;
+  letter-spacing: 1px;
+}
+
+/* Timeline event row */
+.timeline-event {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Keep mission timeline markers aligned */
+.timeline-event::before {
+  content: "●";
+  width: 10px;
+  flex-shrink: 0;
+  color: #4ade80;
+  font-size: 9px;
+  text-align: center;
+}
+
+/* Highlight timeline events on hover */
+.timeline-event {
+  transition: background-color 0.2s ease;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 6px;
+}
+
+/* Highlight the latest mission event */
+.timeline-current {
+  background-color: rgba(0, 255, 102, 0.05);
+  border-left: 3px solid #4ade80;
+  padding-left: 10px;
+}
+.timeline-event:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.timeline-event:last-child {
+  border-bottom: none;
+}
+
+.timeline-event span {
+  min-width: 80px;
+  color: #8f9bb5;
+  font-size: 12px;
+}
+
+/* Keep timeline event text clean and readable */
+.timeline-event strong {
+  color: #d8deeb;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Keep timeline rows compact on mobile */
+@media (max-width: 600px) {
+  .timeline-event {
+    gap: 12px;
+  }
+
+  .timeline-event span {
+    min-width: 70px;
+    font-size: 11px;
+  }
+
+  .timeline-event strong {
+    font-size: 13px;
+  }
+}
+
+.mission-clock-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1px 7px;
+  border: 1px solid #27304a;
+  border-radius: 10px;
+  background: #000000;
+}
+
+.mission-clock-label {
+  color: #c3cadb;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  /* background-color:#050813 */
+}
+
+.mission-clock {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  
+}
+
+@media (min-width: 601px) {
+  .header-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  .header-status > div {
+    flex-shrink: 0;
+  }
+}
+
+@media (min-width: 601px) {
+  .header-status > div:first-child {
+    width: 170px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+  }
+
+  .system-nominal {
+    width: 130px;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.orbit-visualization {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #27304a;
+  border-radius: 12px;
+  background: #121a2e;
+  letter-spacing: 1px;
+}
+.orbit-visualization h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: white;
+  letter-spacing: 1px;
+}
+
+/* Main orbital visualization area */
+.orbit-view {
+  position: relative;
+  width: 320px;
+  height: 320px;
+
+  /* Center Earth and the orbit */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Display Earth as a realistic circular globe */
+/* Realistic Earth globe */
+.earth {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 50%;
+
+  /* Atmospheric glow */
+  filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.6));
+
+  /* Keep Earth above the orbit line */
+  position: relative;
+  z-index: 1;
+}
+
+/* ISS orbit ring
+   Earth radius = 35px
+   400 km ISS altitude = 25px visual scale
+   Total orbit radius = 60px
+*/
+/* ISS orbit ring
+   Earth radius = 35px
+   400 km altitude = 50px visual representation
+   Total orbit radius = 85px
+*/
+/* Visual ISS orbit
+   Earth radius = 45px
+   Visualized ISS altitude = 100px
+   Orbit radius = 145px
+*/
+.orbit-ring {
+  position: absolute;
+
+  width: 290px;
+  height: 290px;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+
+  /* Subtle orbital glow */
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+}
+
+/* Position the spacecraft based on the live ISS longitude */
+/* Keep the ISS image as a small marker on the orbital ring */
+.spacecraft {
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  z-index: 2;
+
+  /* Keep the subtle spacecraft glow */
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+
+
+@keyframes orbit-rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* Arrange the live ISS coordinates with clear spacing */
+.iss-coordinates {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  color: #8f9bb5;
+  font-size: 13px;
+}
+
+
+ /* Keep each coordinate telemetry block compact */
+.coordinate-item {
+  min-width: 180px;
+  padding: 6px 12px;
+  border: 1px solid #27304a;
+  border-radius: 8px;
+  background: #0b1020;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Keep the coordinate label compact */
+.coordinate-item span {
+  color: #8f9bb5;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+/* Keep the live coordinate value slightly larger than the label */
+.coordinate-item strong {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+}
+
+/* Stack coordinate blocks neatly on smaller screens */
+@media (max-width: 600px) {
+  .iss-coordinates {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Let each coordinate block use the available mobile width */
+  .coordinate-item {
+    width: 100%;
+    min-width: 0;
+  }
+  /* Reduce the orbital ring size for smaller screens */
+.orbit-ring {
+  width: 220px;
+  height: 220px;
+}
+
+}
