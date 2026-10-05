@@ -1,5 +1,3 @@
-Yes. Since this is the **README you’ll actually put into your GitHub repository**, here is a polished version that reflects the current MCD features: React, live ISS API data, orbital visualization, telemetry simulation, mission phases, and movement direction.
-
 # 🚀 Mission Control Dashboard
 
 A space-themed **Mission Control Dashboard** built with **React.js** to demonstrate real-time data handling, API integration, dynamic UI updates, and interactive spacecraft monitoring.
