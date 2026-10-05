@@ -38,6 +38,8 @@ const orbitRadius = 145
 const spacecraftX = 50 + (orbitRadius / 145) * 50 * Math.cos(angleInRadians)
 const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
 
+  // Check the direction value received from App.jsx
+  console.log('Orbit Direction Prop:', issDirection)
 
 
   return (
@@ -84,9 +86,9 @@ const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
   {/* Display the direction calculated from consecutive ISS positions */}
 <div className="coordinate-item">
   <span>DIRECTION</span>
-  <strong>
-    {issDirection}
-  </strong>
+  <strong style={{ fontSize: '18px' }}>
+  {issDirection || 'NO DIRECTION'}
+</strong>
 </div>
 </div>
 
