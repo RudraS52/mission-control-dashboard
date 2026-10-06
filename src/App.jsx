@@ -108,18 +108,75 @@ const previousLongitude = previousIssPosition.current.longitude
 
 // Calculate movement direction after the first API reading
 if (previousLatitude !== null && previousLongitude !== null) {
-  const latitudeChange = newLatitude - previousLatitude
-  const longitudeChange = newLongitude - previousLongitude
+// Convert degrees to radians for the bearing calculation
+const toRadians = (degrees) => (degrees * Math.PI) / 180
 
-  // Build a simple compass direction from coordinate changes
-  let direction = ''
+// Convert radians back to degrees
+const toDegrees = (radians) => (radians * 180) / Math.PI
 
-  if (latitudeChange > 0) direction += 'N'
-  if (latitudeChange < 0) direction += 'S'
-  if (longitudeChange > 0) direction += 'E'
-  if (longitudeChange < 0) direction += 'W'
+// Calculate the initial great-circle bearing between two coordinates
+const calculateBearing = (
+  previousLatitude,
+  previousLongitude,
+  currentLatitude,
+  currentLongitude
+) => {
+  const lat1 = toRadians(previousLatitude)
+  const lat2 = toRadians(currentLatitude)
+  const longitudeDifference = toRadians(
+    currentLongitude - previousLongitude
+  )
 
-  setIssDirection(direction || 'STATIONARY')
+  // Calculate the bearing using the spherical Earth formula
+  const y = Math.sin(longitudeDifference) * Math.cos(lat2)
+
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) *
+      Math.cos(lat2) *
+      Math.cos(longitudeDifference)
+
+  // Convert the bearing to degrees and normalize it to 0–360°
+  const bearing =
+    (toDegrees(Math.atan2(y, x)) + 360) % 360
+
+  return bearing
+}
+
+const bearing = calculateBearing(
+  previousLatitude,
+  previousLongitude,
+  newLatitude,
+  newLongitude
+)
+// Debug the actual movement used for bearing calculation
+console.log('Previous Position:', {
+  latitude: previousLatitude,
+  longitude: previousLongitude,
+})
+
+console.log('Current Position:', {
+  latitude: newLatitude,
+  longitude: newLongitude,
+})
+
+console.log('Calculated Bearing:', bearing)
+// Convert the numeric bearing into an 8-point compass direction
+const directions = [
+  'N',
+  'NE',
+  'E',
+  'SE',
+  'S',
+  'SW',
+  'W',
+  'NW',
+]
+
+const directionIndex = Math.round(bearing / 45) % 8
+const direction = directions[directionIndex]
+
+setIssDirection(direction)
 }
 
 // Save the latest position for the next 10-second comparison
