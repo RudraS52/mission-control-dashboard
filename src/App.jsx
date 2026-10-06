@@ -227,6 +227,8 @@ useEffect(() => {
   issPosition={issPosition}
   issLoading={issLoading}
   issError={issError}
+  // Pass the calculated ISS movement direction to the orbit component
+  issDirection={issDirection}
 />
          <MissionTimeline
   missionPhase={missionPhase}
