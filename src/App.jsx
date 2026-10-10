@@ -6,6 +6,7 @@ import MissionOverview from './components/MissionOverview'
 import MissionTimeline from './components/MissionTimeline'
 import OrbitVisualization from './components/OrbitVisualization'
 import { getISSData } from './services/issApi'
+import TelemetryChart from './components/TelemetryChart'
 function App() {
   
   const [telemetryData, setTelemetryData] = useState({
@@ -272,7 +273,18 @@ useEffect(() => {
 /> 
          <MissionOverview />
 
+
  {/* Pass live ISS coordinates and API status to the orbital component */}
+{/* <OrbitVisualization
+  issPosition={issPosition}
+  issLoading={issLoading}
+  issError={issError}
+  // Pass the calculated ISS movement direction to the orbit component
+  issDirection={issDirection}
+/> */}
+
+
+{/* Pass live ISS coordinates and API status to the orbital component */}
 <OrbitVisualization
   issPosition={issPosition}
   issLoading={issLoading}
@@ -280,6 +292,11 @@ useEffect(() => {
   // Pass the calculated ISS movement direction to the orbit component
   issDirection={issDirection}
 />
+
+{/* Display real ISS longitude history */}
+<TelemetryChart longitude={issPosition.longitude} />
+
+
          <MissionTimeline
   missionPhase={missionPhase}
   phaseChangedAt={phaseChangedAt}

@@ -673,9 +673,9 @@ body {
    Visualized ISS altitude = 100px
    Orbit radius = 145px
 */
-.orbit-ring {
-  position: absolute;
 
+.orbit-ring {
+  position: relative;
   width: 290px;
   height: 290px;
 
@@ -683,12 +683,95 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(70, 200, 255, 0.95);
   border-radius: 50%;
 
-  /* Subtle orbital glow */
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+  /* Bright glow on the actual ISS travel path */
+  box-shadow:
+    0 0 6px rgba(40, 190, 255, 0.85),
+    0 0 14px rgba(40, 170, 255, 0.6),
+    0 0 28px rgba(40, 150, 255, 0.3);
 }
+
+.iss-trail {
+  position: absolute;
+  width: 70px;  
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.8;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(40, 170, 255, 0.15),
+    rgba(40, 200, 255, 0.9)
+  );
+  filter: blur(2px);
+  transform-origin: center;
+    transform: translate(-50%, -50%)
+    rotate(var(--iss-trail-angle, 180deg));
+}
+
+
+/* Layered orbital rings around Earth */
+.orbit-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  pointer-events: none;
+  border: 1px solid rgba(80, 190, 255, 0.35);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Largest orbit: subtle blue glow */
+.orbit-layer--outer {
+  width: 122%;
+  height: 122%;
+  border-color: rgba(80, 190, 255, 0.3);
+  box-shadow: 0 0 10px rgba(40, 170, 255, 0.12);
+}
+
+
+/* Outer orbital ring — visible cyan glow */
+.orbit-layer--outer {
+  width: 122%;
+  height: 122%;
+  border: 1px solid rgba(40, 190, 255, 0.8);
+  box-shadow:
+    0 0 6px rgba(40, 190, 255, 0.65),
+    0 0 16px rgba(40, 170, 255, 0.35),
+    inset 0 0 8px rgba(40, 190, 255, 0.12);
+}
+
+
+/* Inner circular ring — stronger cyan glow */
+.orbit-layer--inner {
+  width: 76%;
+  height: 76%;
+
+  border: 1px solid rgba(90, 210, 255, 0.95);
+
+  box-shadow:
+    0 0 5px rgba(90, 210, 255, 0.9),
+    0 0 12px rgba(40, 190, 255, 0.75),
+    0 0 22px rgba(40, 170, 255, 0.45);
+}
+
+/* Tilted orbital ring */
+.orbit-layer--tilted {
+  width: 112%;
+  height: 62%;
+  border: 1px solid rgba(110, 220, 255, 0.85);
+  box-shadow:
+    0 0 7px rgba(80, 200, 255, 0.7),
+    0 0 18px rgba(40, 170, 255, 0.35);
+  transform: translate(-50%, -50%) rotate(-32deg);
+}
+
+
 
 /* Position the spacecraft based on the live ISS longitude */
 /* Keep the ISS image as a small marker on the orbital ring */
@@ -785,4 +868,127 @@ body {
   font-size: 12px;
   letter-spacing: 1px;
   font-weight: 600;
+}
+
+
+/* Orbit visualization container */
+.orbit-view {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 360px;
+  margin: 20px auto;
+  isolation: isolate;
+}
+
+
+.orbit-view {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 1 / 1;
+  margin: 20px auto;
+}
+
+.orbit-view .orbit-ring {
+  position: absolute;
+  width: 80%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+
+/* ISS marker: position comes from the animated CSS angle */
+.orbit-view .spacecraft-animated {
+  --orbit-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--iss-angle))
+    translateY(calc(-1 * var(--orbit-radius)))
+    rotate(calc(-1 * var(--iss-angle)));
+
+  filter: drop-shadow(0 0 6px rgba(90, 210, 255, 0.9));
+  will-change: transform;
+}
+
+
+/* ISS telemetry chart */
+
+
+.telemetry-chart {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: 24px;
+  padding: 20px;
+  background: #030914;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 14px;
+}
+
+/* CSS-only Earth horizon and atmosphere */
+
+.telemetry-chart::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -15%;
+  bottom: -125%;
+  width: 130%;
+  height: 200%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse at 50% 5%,
+      rgba(150, 225, 255, 0.95) 0%,
+      rgba(40, 155, 255, 0.75) 3%,
+      rgba(10, 90, 200, 0.85) 12%,
+      rgba(4, 42, 110, 0.96) 35%,
+      #020914 75%
+    );
+  box-shadow: 0 -10px 35px rgba(30, 160, 255, 0.45);
+  pointer-events: none;
+}
+
+
+
+
+.telemetry-chart h2 {
+  margin: 0;
+  color: #e2f3ff;
+  font-size: 18px;
+}
+
+.chart-subtitle {
+  margin: 6px 0 18px;
+  color: #8da8c2;
+  font-size: 12px;
+}
+
+.telemetry-chart__plot {
+  width: 100%;
+  height: 260px;
+  color: #8da8c2;
+  font-size: 13px;
+}
+
+.telemetry-chart__plot > p {
+  display: grid;
+  height: 100%;
+  margin: 0;
+  place-items: center;
 }
