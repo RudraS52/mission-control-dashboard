@@ -53,11 +53,10 @@ function TelemetryChart({ longitude }) {
                 minTickGap={25}
               />
               <YAxis
-  domain={['auto', 'auto']}
-  tick={{ fill: '#9aadc2', fontSize: 11 }}
-  width={55}
-  tickCount={5}
-/>
+                domain={[-180, 180]}
+                tick={{ fill: '#9aadc2', fontSize: 11 }}
+                width={45}
+              />
               <Tooltip
                 contentStyle={{
                   background: '#101b2b',
