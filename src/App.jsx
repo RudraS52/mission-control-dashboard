@@ -93,21 +93,18 @@ useEffect(() => {
 
 // Fetch and monitor live ISS position data
 useEffect(() => {
-  // Request the latest ISS coordinates
+// Request the latest ISS coordinates
   const fetchISSPosition = async () => {
     try {
-      const data = await getISSData()
-
-// Convert the latest API coordinates to numbers
-const newLatitude = Number(data.latitude)
-const newLongitude = Number(data.longitude)
-
-// Read the previous ISS position saved by useRef
-const previousLatitude = previousIssPosition.current.latitude
-const previousLongitude = previousIssPosition.current.longitude
-
-// Calculate movement direction after the first API reading
-if (previousLatitude !== null && previousLongitude !== null) {
+          const data = await getISSData()
+          // Convert the latest API coordinates to numbers
+          const newLatitude = Number(data.latitude)
+          const newLongitude = Number(data.longitude)
+          // Read the previous ISS position saved by useRef
+          const previousLatitude = previousIssPosition.current.latitude
+          const previousLongitude = previousIssPosition.current.longitude
+          // Calculate movement direction after the first API reading
+    if (previousLatitude !== null && previousLongitude !== null) {
 // Convert degrees to radians for the bearing calculation
 const toRadians = (degrees) => (degrees * Math.PI) / 180
 
@@ -177,35 +174,28 @@ const directionIndex = Math.round(bearing / 45) % 8
 const direction = directions[directionIndex]
 
 setIssDirection(direction)
-}
-
+   }
 // Save the latest position for the next 10-second comparison
 previousIssPosition.current = {
   latitude: newLatitude,
   longitude: newLongitude,
 }
-
 // Update React state with the latest ISS coordinates
 setIssPosition({
   latitude: newLatitude,
   longitude: newLongitude,
 })
-
-      // Clear any previous API error
+  // Clear any previous API error
       setIssError('')
-    } 
-    
-    catch (error) {
+    } catch (error) {
       // Store an error message if the request fails
       setIssError('Unable to fetch ISS position')
-    } 
-    
-    finally {
+    } finally {
       // Mark the request as completed
       setIssLoading(false)
     }
   }
-
+  
   // Fetch immediately when the component loads
   fetchISSPosition()
 
@@ -217,6 +207,9 @@ setIssPosition({
     clearInterval(issTimer)
   }
 }, [])
+
+
+
 
 useEffect(() => {
   // Log only when ISS position state changes

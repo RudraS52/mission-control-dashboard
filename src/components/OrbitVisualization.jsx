@@ -1,123 +1,177 @@
+
+import { useEffect, useRef, useState } from 'react'
 import issImage from '../assets/iis.png'
 import earthImage from '../assets/Earth-Planet.png'
 
-// Receive live ISS coordinates and API request status from App
-// Receive live ISS coordinates, API status, and movement direction
 function OrbitVisualization({
   issPosition,
   issLoading,
   issError,
   issDirection,
 }) {
-
-  // Read the live ISS longitude from React state
-  const longitude = Number(issPosition.longitude)
-
   // Check whether valid ISS coordinates have been received
   const hasPosition =
     issPosition.latitude !== null &&
     issPosition.longitude !== null
 
-  // Convert longitude into an angle around the orbital ring
+  // Convert live longitude into an angle around the orbit
+  const longitude = Number(issPosition.longitude)
+
   const spacecraftAngle = hasPosition
     ? (longitude + 180) % 360
     : 0
 
-  // Convert the angle into radians for circular positioning
-  const angleInRadians = (spacecraftAngle * Math.PI) / 180
+  // Store the animated angle separately from the API target angle
+  const [animatedAngle, setAnimatedAngle] = useState(0)
 
-   // Calculate the spacecraft position around the ring
-  // const spacecraftX = 50 + 50 * Math.cos(angleInRadians)
-  // const spacecraftY = 50 + 50 * Math.sin(angleInRadians)
+  // Keep animation values between React renders
+  const animatedAngleRef = useRef(null)
+  const previousTargetRef = useRef(null)
 
+  // Smoothly animate the ISS between API position updates
+  useEffect(() => {
+    if (!hasPosition) return
 
-// Position the ISS on the exact visual orbit radius
-const orbitRadius = 145
+    // Place the marker at its first valid position immediately
+    if (previousTargetRef.current === null) {
+      previousTargetRef.current = spacecraftAngle
+      animatedAngleRef.current = spacecraftAngle
+      setAnimatedAngle(spacecraftAngle)
+      return
+    }
 
-// Convert the orbit radius into percentage coordinates
-const spacecraftX = 50 + (orbitRadius / 145) * 50 * Math.cos(angleInRadians)
-const spacecraftY = 50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
+    // Ignore repeated target angles
+    if (previousTargetRef.current === spacecraftAngle) return
 
-  // Check the direction value received from App.jsx
-  console.log('Orbit Direction Prop:', issDirection)
+    // Start from the marker's current visual position
+    const startAngle = animatedAngleRef.current
+    const targetAngle = spacecraftAngle
 
+    // Choose the shortest path when crossing the 0°/360° boundary
+    const delta =
+      ((targetAngle - startAngle + 540) % 360) - 180
+
+    const duration = 9500 // Animate over 9.5 seconds
+    let startTime = null
+    let frameId
+
+    // Save the new target so this update is not repeated
+    previousTargetRef.current = targetAngle
+
+    const animate = (timestamp) => {
+      if (startTime === null) startTime = timestamp
+
+      // Calculate animation progress from 0 to 1
+      const progress = Math.min(
+        (timestamp - startTime) / duration,
+        1
+      )
+
+      // Interpolate the angle between old and new positions
+      const currentAngle = startAngle + delta * progress
+
+      animatedAngleRef.current = currentAngle
+      setAnimatedAngle(currentAngle)
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate)
+      } else {
+        // Snap to the exact target when animation completes
+        animatedAngleRef.current = targetAngle
+        setAnimatedAngle(targetAngle)
+      }
+    }
+
+    frameId = requestAnimationFrame(animate)
+
+    // Cancel unfinished animation if the target changes or component unmounts
+    return () => cancelAnimationFrame(frameId)
+  }, [hasPosition, spacecraftAngle])
+
+  // Convert the animated angle into circular coordinates
+  const angleInRadians = (animatedAngle * Math.PI) / 180
+  const orbitRadius = 145
+
+  const spacecraftX =
+    50 + (orbitRadius / 145) * 50 * Math.cos(angleInRadians)
+
+  const spacecraftY =
+    50 + (orbitRadius / 145) * 50 * Math.sin(angleInRadians)
 
   return (
-   <section className="orbit-visualization">
-    
-   <div className="orbit-title-row">
-  <h2>Orbital Position</h2>
+    <section className="orbit-visualization">
 
-  {/* Indicates that ISS coordinates are being updated live */}
-  {!issLoading && !issError && (
-    <span className="live-indicator">● LIVE</span>
-  )}
-</div>
+      <div className="orbit-title-row">
+        <h2>Orbital Position</h2>
 
-    {/* Show the current ISS API request status */}
- {issLoading && (
-  <p className="api-status">Connecting to ISS data...</p>
-)} 
+        {!issLoading && !issError && (
+          <span className="live-indicator">● LIVE</span>
+        )}
+      </div>
 
+      {/* Display API request status */}
+      {issLoading && (
+        <p className="api-status">Connecting to ISS data...</p>
+      )}
 
-{issError && (
-  <p className="api-error">{issError}</p>
-)}
- 
-{/* Display live ISS position telemetry */}
-<div className="iss-coordinates">
-  <div className="coordinate-item">
-    <span>LATITUDE</span>
-    <strong>
-  {issPosition.latitude !== null
-    ? Number(issPosition.latitude).toFixed(4)
-    : '--'}°
-</strong>
-  </div>
+      {issError && (
+        <p className="api-error">{issError}</p>
+      )}
 
-  <div className="coordinate-item">
-    <span>LONGITUDE</span>
-    <strong>
-  {issPosition.longitude !== null
-    ? Number(issPosition.longitude).toFixed(4)
-    : '--'}°
-</strong>
-  </div>
-  {/* Display the direction calculated from consecutive ISS positions */}
-<div className="coordinate-item">
-  <span>DIRECTION</span>
-  <strong style={{ fontSize: '18px' }}>
-  {issDirection || 'NO DIRECTION'}
-</strong>
-</div>
-</div>
+      {/* Keep actual API coordinates and movement direction */}
+      <div className="iss-coordinates">
+        <div className="coordinate-item">
+          <span>LATITUDE</span>
+          <strong>
+            {issPosition.latitude !== null
+              ? Number(issPosition.latitude).toFixed(4)
+              : '--'}°
+          </strong>
+        </div>
 
-    <div className="orbit-view">
-  {/* Display the realistic Earth image  */}
-<img
-  src={earthImage}
-  alt="Earth"
-  className="earth"
-/>
-  <div className="orbit-ring">
-    
-   {/* Position the ISS image using the live longitude */}
-{hasPosition && (
-  <img
-    src={issImage}
-    alt="International Space Station"
-    className="spacecraft"
-    style={{
-      left: `${spacecraftX}%`,
-      top: `${spacecraftY}%`,
-      transform: 'translate(-50%, -50%)',
-    }}
-  />
-)}
- </div>
-</div>
-    
-     </section>
+        <div className="coordinate-item">
+          <span>LONGITUDE</span>
+          <strong>
+            {issPosition.longitude !== null
+              ? Number(issPosition.longitude).toFixed(4)
+              : '--'}°
+          </strong>
+        </div>
+
+        <div className="coordinate-item">
+          <span>DIRECTION</span>
+          <strong style={{ fontSize: '18px' }}>
+            {issDirection || 'NO DIRECTION'}
+          </strong>
+        </div>
+      </div>
+
+      <div className="orbit-view">
+        {/* Existing Earth image */}
+        <img
+          src={earthImage}
+          alt="Earth"
+          className="earth"
+        />
+
+        <div className="orbit-ring">
+          {/* ISS marker follows the animated orbital position */}
+          {hasPosition && (
+            <img
+              src={issImage}
+              alt="International Space Station"
+              className="spacecraft"
+              style={{
+                left: `${spacecraftX}%`,
+                top: `${spacecraftY}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+    </section>
   )
 }
 
