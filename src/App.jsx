@@ -17,6 +17,7 @@ function App() {
 })
 
 const [batteryLevel, setBatteryLevel] = useState(87)
+const [charging, setCharging] = useState(false)
 const [missionPhase, setMissionPhase] = useState("Nominal Operations")
 const [currentTime, setCurrentTime] = useState(new Date())
 const [phaseChangedAt, setPhaseChangedAt] = useState(new Date())
@@ -40,53 +41,31 @@ const [issError, setIssError] = useState('')
 
 // Gradually decrease battery level to simulate power consumption
 useEffect(() => {
-  const timer = setInterval(() => {
-    setBatteryLevel((prev) => {
+  let timeoutId
 
-// Simulate battery discharge and recharge cycle
-const newBattery = prev <= 70 ? 87 : prev - 1
+  const updateBattery = () => {
+    const delay = Math.floor(Math.random() * 4) + 2
+    // Random delay: 2, 3, 4, or 5 seconds
 
+    timeoutId = setTimeout(() => {
+      setBatteryLevel((previous) => {
+        const change = Math.random() < 0.5 ? -1 : 1
+        const nextLevel = previous + change
 
-// Simulate mission phase progression
-setMissionPhase((prev) => {
-  if (prev === "Nominal Operations") {
-    return "Data Collection"
+        if (nextLevel > 100) return 99
+        if (nextLevel < 75) return 76
+
+        return nextLevel
+      })
+
+      updateBattery()
+    }, delay * 1000)
   }
 
-  if (prev === "Data Collection") {
-    return "Orbit Maintenance"
-  }
+  updateBattery()
 
-  return "Nominal Operations"
-})
-
-  setTelemetryData((current) => ({
-    ...current,
-    battery: `${newBattery}%`,
-  }))
-
-  return newBattery
-})
-
-    setTelemetryData({
-      altitude: `${(408 + (Math.random() * 2 - 1)).toFixed(1)} km`,
-      velocity: `${(7.66 + (Math.random() * 0.10 - 0.05)).toFixed(2)} km/s`,
-      // Simulate small temperature fluctuations
-      temperature: `${(21.5 + (Math.random() * 0.6 - 0.3)).toFixed(1)} °C`,
-      battery: `${batteryLevel}%`,
-    })
-  }, 3000)
-
-  const clockTimer = setInterval(() => {
-  setCurrentTime(new Date())
-}, 1000)
-
-return () => {
-  clearInterval(timer)
-  clearInterval(clockTimer)
-}
+  return () => clearTimeout(timeoutId)
 }, [])
-
 // Record the time whenever the mission phase changes
 useEffect(() => {
   setPhaseChangedAt(new Date())

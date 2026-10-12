@@ -1,11 +1,30 @@
 
+import {
+  Mountain,
+  Gauge,
+  Thermometer,
+  BatteryCharging,
+} from "lucide-react"
+
+const telemetryIcons = {
+  Altitude: Mountain,
+  Velocity: Gauge,
+  Temperature: Thermometer,
+  Battery: BatteryCharging,
+}
+
 function TelemetryCard({ label, value, isBattery, batteryLevel }) {
+  const Icon = telemetryIcons[label]
+
   return (
     <div className="telemetry-card">
-      <span>{label}</span>
+      <div className="telemetry-card-label">
+        {Icon && <Icon size={20} strokeWidth={1.8} />}
+        <span>{label}</span>
+      </div>
+
       <strong>{value}</strong>
 
-      {/* Show battery progress and warning only for the battery */}
       {isBattery && (
         <div>
           <div className="battery-bar">
@@ -17,7 +36,6 @@ function TelemetryCard({ label, value, isBattery, batteryLevel }) {
             ></div>
           </div>
 
-          {/* Show warning below the progress bar when battery is low */}
           {batteryLevel <= 75 && (
             <small className="battery-warning">
               LOW BATTERY
@@ -30,4 +48,3 @@ function TelemetryCard({ label, value, isBattery, batteryLevel }) {
 }
 
 export default TelemetryCard
-
