@@ -304,7 +304,7 @@ useEffect(() => {
       </main>
       <footer className="dashboard-footer">
   <p>
-    © {new Date().getFullYear()} Mission Control Dashboard • Spacecraft Monitoring System.
+    © {new Date().getFullYear()} Mission Control Dashboard | Spacecraft Monitoring System | Developed by Rudra Singh.
   </p>
 </footer>
     </div>
