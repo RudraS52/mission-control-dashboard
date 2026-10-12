@@ -1,11 +1,14 @@
 import OverviewCard from './OverviewCard'
 
+
 const missionData = {
-  launchVehicle: "Falcon 9",
-  launchSite: "LC-39A",
-  orbit: "Low Earth Orbit",
-  missionDuration: "12 Days",
+  spacecraft: "International Space Station (ISS)",
+  launchVehicle: "Multiple launch vehicles",
+  launchSite: "International Space Station",
+  orbit: "Low Earth Orbit (LEO)",
+  missionDuration: "Continuous orbital mission",
 }
+
 
 function MissionOverview() {
   return (

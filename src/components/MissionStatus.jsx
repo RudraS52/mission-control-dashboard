@@ -1,46 +1,36 @@
 
 function MissionStatus({ missionPhase }) {
-  
-  // Map each mission phase to its status message
-const phaseMessages = {
-  "Nominal Operations": "All systems operating normally.",
-  "Data Collection": "Spacecraft is collecting mission data.",
-  "Orbit Maintenance": "Orbit maintenance activities in progress.",
-}
-  
+  const phaseMessages = {
+    "Nominal Operations": "ISS is orbiting Earth normally.",
+    "Data Collection": "Live ISS position data is being tracked.",
+    "Orbit Maintenance": "ISS orbital activity is being monitored.",
+  }
+
   return (
     <section className="mission-status">
       <h2>Mission Status</h2>
 
       <div className="status-indicator">
-     
-        {/* Show a message based on the current mission phase */}
+        <span>●</span>
+        <p className="mission-message">
+          {phaseMessages[missionPhase] ||
+            "Monitoring ISS orbital position."}
+        </p>
+      </div>
 
-<p className="mission-message">
-  {missionPhase === "Nominal Operations"
-    ? "All systems operating normally."
-    : missionPhase === "Data Collection"
-    ? "Spacecraft is collecting mission data."
-    : "Orbit maintenance activities in progress."}
-</p>
-
-  <span>●</span>
-  {phaseMessages[missionPhase]}
-</div>
       <div className="mission-details">
         <div>
           <span>Mission ID</span>
-          <strong>MC-001</strong>
+          <strong>ISS-001</strong>
         </div>
 
         <div>
           <span>Spacecraft</span>
-          <strong>Explorer-01</strong>
+          <strong>International Space Station (ISS)</strong>
         </div>
 
         <div>
           <span>Mission Phase</span>
-          {/* Display the current simulated mission phase */}
           <strong>{missionPhase}</strong>
         </div>
       </div>
@@ -49,4 +39,3 @@ const phaseMessages = {
 }
 
 export default MissionStatus
-
