@@ -1023,3 +1023,30 @@ body {
   margin: 0;
   place-items: center;
 }
+
+
+.orbit-view--3d {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #030916;
+}
+
+.orbit-view--3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
+
+@media (min-width: 1100px) {
+  .orbit-view--3d {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+}
+

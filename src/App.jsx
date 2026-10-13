@@ -4,9 +4,10 @@ import MissionStatus from './components/MissionStatus'
 import Telemetry from './components/Telemetry'
 import MissionOverview from './components/MissionOverview'
 import MissionTimeline from './components/MissionTimeline'
-import OrbitVisualization from './components/OrbitVisualization'
+// import OrbitVisualization from './components/OrbitVisualization'
 import { getISSData } from './services/issApi'
 import TelemetryChart from './components/TelemetryChart'
+import OrbitVisualization3D from './components/OrbitVisualization3D'
 function App() {
   
   const [telemetryData, setTelemetryData] = useState({
@@ -66,6 +67,35 @@ useEffect(() => {
 
   return () => clearTimeout(timeoutId)
 }, [])
+
+// update the temperature  in telemetry data 
+useEffect(() => {
+  let timeoutId
+
+  const updateTemperature = () => {
+    const delay = Math.floor(Math.random() * 3) + 2
+
+    timeoutId = setTimeout(() => {
+      setTelemetryData((previous) => {
+        const current = parseFloat(previous.temperature)
+        const change = Math.random() < 0.5 ? -0.1 : 0.1
+        const next = Math.min(22, Math.max(20, current + change))
+
+        return {
+          ...previous,
+          temperature: `${next.toFixed(1)} °C`,
+        }
+      })
+
+      updateTemperature()
+    }, delay * 1000)
+  }
+
+  updateTemperature()
+
+  return () => clearTimeout(timeoutId)
+}, [])
+
 // Record the time whenever the mission phase changes
 useEffect(() => {
   setPhaseChangedAt(new Date())
@@ -73,10 +103,29 @@ useEffect(() => {
 
 // Fetch and monitor live ISS position data
 useEffect(() => {
-// Request the latest ISS coordinates
+  // Request the latest ISS coordinates
   const fetchISSPosition = async () => {
     try {
           const data = await getISSData()
+
+          // Log the latest ISS altitude returned by the API (in kilometres)
+             console.log('ISS altitude:', data.altitude)
+
+          // Log the latest ISS velocity returned by the API (in kilometres per hour)
+             console.log('ISS velocity (km/h):', data.velocity)
+            
+         // Convert API values into the units displayed by the dashboard
+             const altitude = Number(data.altitude)
+             const velocityKms = Number(data.velocity) / 3600
+
+ // Update altitude and velocity while preserving other telemetry values
+setTelemetryData((previous) => ({
+  ...previous,
+  altitude: `${altitude.toFixed(2)} km`,
+  velocity: `${velocityKms.toFixed(3)} km/s`,
+  
+}))
+
           // Convert the latest API coordinates to numbers
           const newLatitude = Number(data.latitude)
           const newLongitude = Number(data.longitude)
@@ -188,15 +237,60 @@ setIssPosition({
   }
 }, [])
 
-
-
-
+// Define the simulated mission phases displayed on the dashboard
 useEffect(() => {
-  // Log only when ISS position state changes
+  
+  const phases = [
+    "Nominal Operations",
+    "Data Collection",
+    "Orbit Maintenance",
+  ]
+
+  // Store the timeout ID so it can be cleared when the component unmounts
+  let timeoutId
+
+  // Schedule the next simulated mission phase change
+  const updateMissionPhase = () => {
+    // Generate a random delay between 5 and 10 seconds
+    const delay = Math.floor(Math.random() * 6) + 5
+
+    timeoutId = setTimeout(() => {
+      // Select a random phase different from the current phase
+      setMissionPhase((previous) => {
+        const availablePhases = phases.filter(
+          (phase) => phase !== previous
+        )
+
+        const randomIndex = Math.floor(
+          Math.random() * availablePhases.length
+        )
+
+        // Return the randomly selected mission phase
+        return availablePhases[randomIndex]
+      })
+
+      // Schedule another phase change after the next random delay
+      updateMissionPhase()
+    }, delay * 1000)
+  }
+
+  // Start the simulated mission phase updates
+  updateMissionPhase()
+
+  // Clear the pending timeout when the component unmounts
+  return () => clearTimeout(timeoutId)
+}, [])
+
+
+// Log only when ISS position state changes
+useEffect(() => {
+
   console.log('ISS Position Updated:', issPosition)
   console.log('ISS Direction:', issDirection)
   
+  
 }, [issPosition])
+
 
 // Check the ISS position stored in React state
 // console.log('ISS Position State:', issPosition)
@@ -264,11 +358,10 @@ useEffect(() => {
 
 
 {/* Pass live ISS coordinates and API status to the orbital component */}
-<OrbitVisualization
+<OrbitVisualization3D
   issPosition={issPosition}
   issLoading={issLoading}
   issError={issError}
-  // Pass the calculated ISS movement direction to the orbit component
   issDirection={issDirection}
 />
 

@@ -26,85 +26,91 @@ function OrbitVisualization({
   const previousTargetRef = useRef(null)
   const animationFrameRef = useRef(null)
 
-  // Smoothly animate the ISS between API position updates
+  
+ 
+  // Smoothly animate the ISS marker when the API position changes
   useEffect(() => {
+    // Wait until valid coordinates and the marker are available
     if (!hasPosition || !spacecraftRef.current) return
 
     const marker = spacecraftRef.current
+    const orbitRadius = 50 // Keep the marker inside the orbital ring
 
-    // Position the marker around the existing circular path
+    // Position the ISS marker and its trail along the circular path
     const updateMarker = (angle) => {
       const radians = (angle * Math.PI) / 180
 
-      const x = 50 + 50 * Math.cos(radians)
-      const y = 50 + 50 * Math.sin(radians)
+      // Calculate marker coordinates around the center of the orbit
+      const x = 50 + orbitRadius * Math.cos(radians)
+      const y = 50 + orbitRadius * Math.sin(radians)
 
       marker.style.left = `${x}%`
       marker.style.top = `${y}%`
-    
+
+      // Keep the trail attached to the ISS marker
       const trail = marker.parentElement?.querySelector('.iss-trail')
 
       if (trail) {
         trail.style.left = `${x}%`
         trail.style.top = `${y}%`
-       // Orient the trail along the orbital direction of travel
-trail.style.setProperty(
-  '--iss-trail-angle',
-  `${angle + 90}deg`
-)
-      }
 
-    
+        // Rotate the trail to follow the circular movement
+        trail.style.setProperty(
+          '--iss-trail-angle',
+          `${angle + 90}deg`
+        )
+      }
     }
 
-    // Place the ISS at its first valid position immediately
+    // Initialize the marker at the first received ISS position
     if (animatedAngleRef.current === null) {
       animatedAngleRef.current = spacecraftAngle
       previousTargetRef.current = spacecraftAngle
-
       updateMarker(spacecraftAngle)
       return
     }
 
-    // Do not restart the animation for an unchanged target
+    // Skip animation when the API target has not changed
     if (previousTargetRef.current === spacecraftAngle) return
 
-    // Begin at the marker's current visual position
+    // Start from the marker's current animated position
     const startAngle = animatedAngleRef.current
     const targetAngle = spacecraftAngle
 
-    // Choose the shortest path across the 0°/360° boundary
+    // Find the shortest angular path across 0° and 360°
     const delta =
       ((targetAngle - startAngle + 540) % 360) - 180
 
-    // Animate over the approximate API refresh interval
-    const duration = 12000 // Complete the visual transition in 9 seconds
+    // Animate the transition over 9 seconds
+    const duration = 9000
     let startTime = null
 
-    // Save the latest API target
+    // Save the new target received from the API
     previousTargetRef.current = targetAngle
 
-    // Cancel any previous animation before starting another
+    // Cancel any previous animation frame before starting another
     if (animationFrameRef.current !== null) {
       cancelAnimationFrame(animationFrameRef.current)
       animationFrameRef.current = null
     }
 
+    // Animate the marker progressively toward the new position
     const animate = (timestamp) => {
-      if (startTime === null) {
-        startTime = timestamp
-      }
+      if (startTime === null) startTime = timestamp
 
-      // Calculate progress from 0 to 1
+      // Calculate animation progress between 0 and 1
       const progress = Math.min(
         (timestamp - startTime) / duration,
         1
       )
 
-      // Linear interpolation gives a constant angular speed
-      const angle = startAngle + delta * progress
+      // Apply smooth ease-in/ease-out movement
+      const easedProgress =
+        progress * progress * (3 - 2 * progress)
 
-      // Save and display the current animated position
+      const angle = startAngle + delta * easedProgress
+
+      // Save and render the current animated position
       animatedAngleRef.current = angle
       updateMarker(angle)
 
@@ -112,17 +118,18 @@ trail.style.setProperty(
         animationFrameRef.current =
           requestAnimationFrame(animate)
       } else {
-        // Finish exactly at the latest target
-        animatedAngleRef.current = targetAngle
-        updateMarker(targetAngle)
+        // Finish exactly at the target angle
+        animatedAngleRef.current = startAngle + delta
+        updateMarker(startAngle + delta)
         animationFrameRef.current = null
       }
     }
 
+    // Start the animation
     animationFrameRef.current =
       requestAnimationFrame(animate)
 
-    // Clean up when the target changes or component unmounts
+    // Cancel pending animation frames when the effect restarts or unmounts
     return () => {
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current)
@@ -130,6 +137,7 @@ trail.style.setProperty(
       }
     }
   }, [hasPosition, spacecraftAngle])
+
 
   return (
     <section className="orbit-visualization">
